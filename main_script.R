@@ -1,4 +1,5 @@
 
+
 #projects1 = read.csv("datasets/ks-projects-201612.csv",header=T,na.strings="?")
 projects = read.csv("datasets/ks-projects-201801.csv",header=T,na.strings="?") #Talvez seja melhor apenas analisarmos um dos datasets dado que ambos têm dimensões suficientemente grandes?
 
@@ -40,8 +41,32 @@ summary(projects$pledged) #Para não ter valores em moedas diferentes é necess�
 summary(projects$usd.pledged) #Tendo em conta que a conversão do atributo goal só existe através da Fixer.io api, convém utilizarmos a mesma para o pledged.
 summary(projects$usd_pledged_real) #Classe, atributo objetivo
 
-##########Remoção dos atributos desnecessários#########
+##########Tratamento de dados#########
 
-dataset0 <- projects[,-c(1,2,3,6,7,8,9, 10, 11, 13)] #São removidos todos os atributos que não serão utilizados (id, goal, pledged, usd.pledged, state, backers,) ou não podem ser utilizados sem tratamento (name, category, deadline, launched)
+dataset0 <- projects[,c(4, 5, 12, 15, 14)] #São removidos todos os atributos que não serão utilizados (id, goal, pledged, usd.pledged, state, backers,) ou não podem ser utilizados sem tratamento (name, category, deadline, launched)
 names(dataset0)
 
+attach(dataset0)
+
+par(mfrow = c(2,2))
+plot(usd_goal_real, usd_pledged_real); plot(main_category, usd_pledged_real); plot(currency, usd_pledged_real); plot(country, usd_pledged_real);
+
+lm.fit0 <- lm(usd_pledged_real ~ usd_goal_real + main_category + currency + country)
+summary(lm.fit0) #Modelo muito fraco. Apenas descreve os dados a 0.8%
+
+rm("lm.fit0")
+rm("dataset0")
+detach(dataset0)
+
+dataset1 <- projects[,c(4,15,14)]  #Removeu-se também o atributo currency e country para reduzir a complexidade
+dataset1$launch.deadline.diff = difftime(as.Date(projects[,"deadline"]), as.Date(projects[,"launched"]))
+
+attach(dataset1)
+
+plot(launch.deadline.diff, usd_pledged_real) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
+
+lm.fit1 <- lm(usd_pledged_real ~ main_category + usd_goal_real + launch.deadline.diff)
+summary(lm.fit1) #modelo continuar a ser muito fraco
+
+rm("dataset1")
+detach(dataset1)
