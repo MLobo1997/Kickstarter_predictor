@@ -42,6 +42,6 @@ summary(projects$usd_pledged_real) #Classe, atributo objetivo
 
 ##########Remoção dos atributos desnecessários#########
 
-dataset0 <- projects[,-c(1,2,3,6,7,8,9, 10, 13)] #São removidos todos os atributos que não serão utilizados (id, goal, pledged, usd.pledged) ou não podem ser utilizados sem tratamento (name, category, deadline, launched)
+dataset0 <- projects[,-c(1,2,3,6,7,8,9, 10, 11, 13)] #São removidos todos os atributos que não serão utilizados (id, goal, pledged, usd.pledged, state, backers,) ou não podem ser utilizados sem tratamento (name, category, deadline, launched)
 names(dataset0)
 
