@@ -61,3 +61,10 @@ summary(projects$usd.pledged) #Tendo em conta que a conversão do atributo goal 
 ########---USD Pledged Real---########
 
 summary(projects$usd_pledged_real) #Classe, atributo objetivo
+
+########---Duration---########
+
+plot(duration, usd_pledged_real) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
+plot(duration, log(usd_pledged_real)) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
+
+########---Duration---########
