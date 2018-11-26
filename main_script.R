@@ -1,32 +1,45 @@
-library(boot)
+#library(boot)
 setwd("~/Development/Kickstarter_predictor") # para o Lobo
 #projects1 = read.csv("datasets/ks-projects-201612.csv",header=T,na.strings="?")
-projects = read.csv("datasets/ks-projects-201801.csv",header=T,na.strings="?") #Talvez seja melhor apenas analisarmos um dos datasets dado que ambos têm dimensões suficientemente grandes?
+projects <- read.csv("datasets/ks-projects-201801_WithOtherActive.csv",header=T,na.strings="?") #Talvez seja melhor apenas analisarmos um dos datasets dado que ambos têm dimensões suficientemente grandes?
 names(projects)
 projects <- projects[,-c(7, 9, 10, 11, 13)] #são removidos os atributos que não faz sentido utilizarmos (não os que não sao úteis)
+#Tendo nos apercebi que existem projetos com data de inicio em 1970 e que nenhum têm pledge, estes foram removidos
+projects <- projects[substring(projects$launched,1, 4) != "1970",]
+#Transformar as datas todas em strings (porque estão em factors)
+projects$launched <- as.character(projects$launched)
+projects$deadline <- as.character(projects$deadline)
 
 #attach(projects)
 
 dim(projects)
 names(projects)
 
+
 ##########Tratamento de dados########
+size <- 200000
 set.seed(125)
-indexes <- sample(1:dim(projects)[1], 20000)
+indexes <- sample(1:dim(projects)[1], size)
 projects <- projects[indexes,]  #Removeu-se também o atributo currency e country para reduzir a complexidade
-projects$duration = difftime(as.Date(projects[indexes,"deadline"]), as.Date(projects[indexes,"launched"]))
+
 names(projects)
-projects <- projects[, c("main_category", "usd_goal_real", "duration", "usd_pledged_real")]
-summary(projects)
-dim(projects)
 
-attach(projects)
+######TEST######
+set   <-  projects[, c("category", "usd_goal_real", "usd_pledged_real")]
+train <-  set[1:(size%/%2),]
+test  <-  set[(size%/%2):size,]
+summary(train)
+summary(test)
 
-plot(duration, usd_pledged_real) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
-plot(duration, log(usd_pledged_real)) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
-lm.fit1 <- glm(usd_pledged_real~., data = projects)
-summary(lm.fit1) #modelo continuar a ser muito fraco
-cv.err <- cv.glm(projects, lm.fit1, K = 100)$delta[1]
-cv.err
+lm.fit <- lm(usd_pledged_real~., data = train)
+summary(lm.fit) 
+pred <- predict.lm(lm.fit, newdata = test, se.fit = T, interval = "prediction") #começamos por utilizar cross validation mas como sabiamos que tinhamos muitos dados não havia necessidade por questões de eficiencia
+mean(abs(pred$fit[,1] - test$usd_pledged_real)) #MEAN ABSOLUTE ERROR
 
+#Resultados:
+#c("main_category", "usd_goal_real", "usd_pledged_real"): 746.6837
+#c("category", "usd_goal_real", "usd_pledged_real"): 1799.943
+#c("categoryconcat", "usd_goal_real", "usd_pledged_real"): 1800.004
+#c("category2"(COM FACTORNR 10), "usd_goal_real", "usd_pledged_real"): 235.9796
+#c("category3", "usd_goal_real", "usd_pledged_real"): 278.1705
 
