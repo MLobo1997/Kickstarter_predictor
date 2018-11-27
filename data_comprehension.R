@@ -17,6 +17,8 @@ length(unique(projects$deadline)) #É necessário arranjar outra forma de interp
 
 length(unique(projects$category)) #demasiados valores únicos para ser utilizado como atributo nominativo, desnecessário a não ser que se faça algum tratamento. Talvez ver utilizar a frequencia da categoria?
 
+
+
 ########---Main Category---########
 
 unique(projects$main_category) #Provavelmente muito útil
@@ -67,4 +69,12 @@ summary(projects$usd_pledged_real) #Classe, atributo objetivo
 plot(duration, usd_pledged_real) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
 plot(duration, log(usd_pledged_real)) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
 
-########---Duration---########
+########---name.word_count---########
+
+summary(projects$name.word_count)
+plot(projects$name.word_count, log(projects$usd_pledged_real + 0.01)) #não aparenta haver qualquer relação
+
+########---name.length---########
+
+summary(projects$name.length)
+plot(projects$name.length, log(projects$usd_pledged_real + 0.01)) #não aparenta haver qualquer relação
