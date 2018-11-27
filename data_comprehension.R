@@ -17,7 +17,8 @@ length(unique(projects$deadline)) #É necessário arranjar outra forma de interp
 
 length(unique(projects$category)) #demasiados valores únicos para ser utilizado como atributo nominativo, desnecessário a não ser que se faça algum tratamento. Talvez ver utilizar a frequencia da categoria?
 
-
+#Se utilizarmos este bem, entao Main Category talvez se menos significativi, dado que cada subcategoria corresponde a PELO MENOS uma categoria. Com o script a seguir confere-se que há subcategorias iguais para diversas categorias
+unique((projects[,c("category", "main_category")])[order(projects$category),])
 
 ########---Main Category---########
 
@@ -72,9 +73,16 @@ plot(duration, log(usd_pledged_real)) #se se remover aquele outlier dos 1500 vê
 ########---name.word_count---########
 
 summary(projects$name.word_count)
-plot(projects$name.word_count, log(projects$usd_pledged_real + 0.01)) #não aparenta haver qualquer relação
+plot(projects$name.word_count, log(projects$usd_pledged_real + 1)) #não aparenta haver qualquer relação
 
 ########---name.length---########
 
 summary(projects$name.length)
-plot(projects$name.length, log(projects$usd_pledged_real + 0.01)) #não aparenta haver qualquer relação
+plot(projects$name.length, log(projects$usd_pledged_real + 1)) #não aparenta haver qualquer relação
+
+########---category2---########
+summary(projects$category2)
+
+########---category3---########
+summary(projects$category3)
+plot(projects$category3, log(projects$usd_pledged_real+1))

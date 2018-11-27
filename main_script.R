@@ -15,12 +15,12 @@ set.seed(125)
 indexes <- sample(1:dim(projects)[1], 100000)
 projects <- projects[indexes,]  #Removeu-se também o atributo currency e country para reduzir a complexidade
 
+######Apenas correr a seguir à criação de atributos (que se encontra noutro ficheiro)
 names(projects)
 projects <- projects[, c("main_category", "usd_goal_real", "duration", "usd_pledged_real")]
 summary(projects)
 dim(projects)
 
-######Apenas correr a seguir à criação de atributos (que se encontra noutro ficheiro)
 attach(projects)
 
 lm.fit1 <- glm(usd_pledged_real~., data = projects)
