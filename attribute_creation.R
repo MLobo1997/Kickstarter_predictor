@@ -29,7 +29,7 @@ calculateCategoryValues <- function(dataset, category){ #função auxiliar
   return(v)
 }
 
-createCategory2 <- function(dataset, category, factorNr){
+filterBestCategories <- function(dataset, category, factorNr){
   v <- calculateCategoryValues(dataset, category) 
   
   bestCategories <- factor(names(tail(sort(v), factorNr))) #definir aqui o número de subcategorias
@@ -43,7 +43,7 @@ createCategory2 <- function(dataset, category, factorNr){
   
   return(factor(r))
 }
-projects$category2 <- createCategory2(projects, projects$category, 10)
+projects$category2 <- filterBestCategories(projects, projects$category, 10)
 
 ###Transformação das subcategorias nas medianas dos seus pledges
 createCategory3 <- function(dataset, category){
@@ -61,9 +61,8 @@ createConcatenatedCategory <- function(dataset){
 }
 projects$categoryconcat <- createConcatenatedCategory(projects)
 
-projects$categoryconcat2 <- createCategory2(projects, projects$categoryconcat, 10)
+projects$categoryconcat2 <- filterBestCategories(projects, projects$categoryconcat, 35) #O melhor foi com 35
 
-###Fazer um categoryconcat2
 
 
 

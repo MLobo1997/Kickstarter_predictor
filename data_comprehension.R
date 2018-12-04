@@ -27,10 +27,11 @@ unique((projects[,c("category", "main_category")])[order(projects$category),])
 unique(projects$main_category) #Provavelmente muito útil
 
 ########---Currency---########
-
+#By including currency and country some currencies get NA'd
 unique(projects$currency) #Provavelmente útil
 
-boxplot(formula = log(projects$usd_pledged_real + 1) ~ projects$currency)
+par(mfrow=c(1,2))
+boxplot(formula = projects$usd_pledged_real ~ projects$currency, outline = F)
 
 ########---Goal---########
 
@@ -51,7 +52,7 @@ sort(projects$deadline)
 
 project_nr_by_month <- aggregate(usd_pledged_real ~ factor(substring(launched, 6, 7)), FUN = length)
 names(project_nr_by_month) <- c("month", "length")
-barplot(project_nr_by_month$length)
+barplot(project_nr_by_month$length) 
 
 boxplot(usd_pledged_real ~ substring(launched, 6, 7), outline = F) #Em função dos meses nao aparenta haver nenhum que a média de financiamentos seja superior
 
@@ -59,10 +60,12 @@ boxplot(usd_pledged_real ~ substring(launched, 6, 7), outline = F) #Em função 
 
 unique(projects$state) #Este atributo está demasiado relacionado com o atributo objetivo para ser utilizado
 
+dim(projects[projects$state %in% c("successful", "failed"),])
+
 ########---Country---########
 
 unique(projects$country) #Possivelmente útil
-boxplot(formula = log(projects$usd_pledged_real+0.0001) ~ projects$country)
+boxplot(formula = projects$usd_pledged_real ~ projects$country, outline = F)
 
 ########---Backers---########
 
@@ -80,6 +83,7 @@ summary(projects$usd.pledged) #Tendo em conta que a conversão do atributo goal 
 ########---USD Pledged Real---########
 
 summary(projects$usd_pledged_real) #Classe, atributo objetivo
+length(projects[projects$usd_pledged_real == 0,"usd_pledged_real"])
 
 #Vamos verificar se houve alterações nos valores de pledging ao longo dos anos
 
