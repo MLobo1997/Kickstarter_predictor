@@ -109,6 +109,9 @@ summary(projects$category2)
 summary(projects$category3)
 boxplot(usd_pledged_real ~ category3, outline = F) #impossivel interpretar
 
+########---categoryconcat---#####
+length(unique(projects$categoryconcat))
+
 
 ########---other_active_projects -- através de um programa em java foi criado um atributo que diz qual o número de projetos ativos na data launched
 summary(other_active_projects)
