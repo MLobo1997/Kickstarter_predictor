@@ -61,7 +61,7 @@ createConcatenatedCategory <- function(dataset){
 }
 projects$categoryconcat <- createConcatenatedCategory(projects)
 
-projects$categoryconcat2 <- filterBestCategories(projects, projects$categoryconcat, 35) #O melhor foi com 35
+projects$categoryconcat2 <- filterBestCategories(projects, projects$categoryconcat, 35) #The ideal value for classification was 111
 
 
 
