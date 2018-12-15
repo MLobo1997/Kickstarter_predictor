@@ -23,7 +23,7 @@ calculateCategoryValues <- function(dataset, category){ #função auxiliar
   names(v) <- categories
   
   for(i in 1:length(v)){
-    v[i] <- median(dataset[category == categories[i], "usd_pledged_real"]) #mediana para não ser influenciado por outliers
+    v[i] <- mean(dataset[category == categories[i], "success"]) #mediana para não ser influenciado por outliers
   }
   
   return(v)
@@ -61,8 +61,41 @@ createConcatenatedCategory <- function(dataset){
 }
 projects$categoryconcat <- createConcatenatedCategory(projects)
 
-projects$categoryconcat2 <- filterBestCategories(projects, projects$categoryconcat, 35) #The ideal value for classification was 111
+projects$categoryconcat2 <- filterBestCategories(projects, projects$categoryconcat, 111) #The ideal value for classification was 111
 
 
+#Creating the sortable attribute of categories
+calculateEnumeratedCategoryValues <- function(dataset, category, objective){ #função auxiliar
+  categories <- unique(category)
+  v <- rep(0, length(categories))
+  names(v) <- categories
+  
+  for(i in 1:length(v)){
+    v[i] <- mean(dataset[category == categories[i], objective]) 
+  }
+  
+  v <- sort(v)
+  
+  for (i in 1:length(v)){
+    v[i] = i
+  }
+  
+  return(v)
+}
 
 
+createCategory3Classification <- function (dataset, values){
+  v <- calculateEnumeratedCategoryValues(dataset, values, "success")
+  
+  return(v[values])
+}
+
+createCategory3Regression <- function (dataset, values){
+  v <- calculateEnumeratedCategoryValues(dataset, values, "usd_pledged_real")
+  
+  return(v[values])
+}
+
+projects$categoryconcat3 <- createCategory3Regression(projects, projects$categoryconcat)
+
+projects$country3 <- createCategory3Regression(projects, projects$country)

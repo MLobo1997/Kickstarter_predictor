@@ -30,7 +30,7 @@ unique(projects$main_category) #Provavelmente muito útil
 #By including currency and country some currencies get NA'd
 unique(projects$currency) #Provavelmente útil
 
-par(mfrow=c(1,2))
+par(mfrow=c(1,1))
 boxplot(formula = projects$usd_pledged_real ~ projects$currency, outline = F)
 
 ########---Goal---########
@@ -38,6 +38,9 @@ boxplot(formula = projects$usd_pledged_real ~ projects$currency, outline = F)
 summary(projects$goal) #É importante utilizar o usd_goal_real em vez deste, por ser uniforme e estar convertido para USD
 summary(projects$usd_goal_real) #Provavelmente muito útil
 
+success_by_goal <- aggregate(success ~ (usd_goal_real %/% 1000), FUN = mean)
+success_by_goal[success_by_goal$success > 0.02,]
+barplot(success_by_goal$success)
 
 ########---Launched---########
 
@@ -90,17 +93,17 @@ length(projects[projects$usd_pledged_real == 0,"usd_pledged_real"])
 ########---Duration---########
 
 summary(duration)
-boxplot(usd_pledged_real ~ duration, outline = F) #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
+boxplot(usd_pledged_real ~ duration, outline = F, xlab = "Duration", ylab = "Pledge") #se se remover aquele outlier dos 1500 vê se talvez uma correlação quadrática
 
 ########---name.word_count---########
 
 summary(name.word_count)
-boxplot(usd_pledged_real ~ name.word_count, outline = F) #aparenta haver relação quadratica!!
+boxplot(usd_pledged_real ~ name.word_count, outline = F, xlab = "Number of Words of the name", ylab = "Pledge") #aparenta haver relação quadratica!!
 
 ########---name.length---########
 
 summary(name.length)
-boxplot(usd_pledged_real ~ name.length, outline = F)
+boxplot(usd_pledged_real ~ name.length, outline = F, xlab = "Number of characters in the name", ylab = "Pledge")
 
 ########---category2---########
 summary(projects$category2)
@@ -112,6 +115,11 @@ boxplot(usd_pledged_real ~ category3, outline = F) #impossivel interpretar
 ########---categoryconcat---#####
 length(unique(projects$categoryconcat))
 
+boxplot(usd_pledged_real ~ categoryconcat, outline = F)
+
+pledge_by_category3 <- aggregate(usd_pledged_real ~ categoryconcat3, FUN = mean)
+pledge_by_category3 <- pledge_by_category3[order(pledge_by_category3$usd_pledged_real),]
+barplot(pledge_by_category3$usd_pledged_real, names.arg = 1:170)
 
 ########---other_active_projects -- através de um programa em java foi criado um atributo que diz qual o número de projetos ativos na data launched
 summary(other_active_projects)
@@ -123,10 +131,10 @@ pledge_by_other_actives <- aggregate(usd_pledged_real ~ (other_active_projects %
 barplot(pledge_by_other_actives$usd_pledged_real, width = 0.75, names.arg = pledge_by_other_actives$`other_active_projects%/%1000` * 1000, xlab = "Intervals of other_active_projects values", ylab = "Pledge mean")
 lines(pledge_by_other_actives$`other_active_projects%/%1000`, pledge_by_other_actives$usd_pledged_real, col = "red")
 
-pledge_by_other_actives <- aggregate(usd_pledged_real ~ (other_active_projects %/% 1000), FUN = median)
+pledge_by_other_actives <- aggregate(success ~ (other_active_projects %/% 1000), FUN = mean)
 
-barplot(pledge_by_other_actives$usd_pledged_real, width = 0.75, names.arg = pledge_by_other_actives$`other_active_projects%/%1000` * 1000, xlab = "Intervals of other_active_projects values", ylab = "Pledge median")
-lines(pledge_by_other_actives$`other_active_projects%/%1000`, pledge_by_other_actives$usd_pledged_real, col = "red")
+barplot(pledge_by_other_actives$success, width = 0.75, names.arg = pledge_by_other_actives$`other_active_projects%/%1000` * 1000, xlab = "Intervals of other_active_projects values", ylab = "Success")
+lines(pledge_by_other_actives$`other_active_projects%/%1000`, pledge_by_other_actives$success, col = "red")
 #Tentar com barplots? Anyway há claramente correlação. Muito interessante a comparação entra a média e mediana. É um bom argumento para dizer que, a longo prazo, seria melhor para o kickstarter reduzir o número de projetos
 
 #Poderá o pledge estar a ser influenciado pelos anos e nao pelo nr de projetos ativos?
