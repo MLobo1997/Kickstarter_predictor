@@ -26,7 +26,7 @@ projects <- projects[indexes,]  #Removeu-se também o atributo currency e countr
 names(projects)
 
 ######TEST######
-set   <-  projects[, c("categoryconcat3", "other_active_projects", "country3", "name.word_count", "duration", "usd_goal_real", "usd_pledged_real")]
+set   <-  projects[, c("categoryconcat3", "other_active_projects", "currencyCountry2", "name.word_count", "duration", "usd_goal_real", "usd_pledged_real")]
 train <-  set[1:(size%/%2),]
 test  <-  set[(size%/%2):size,]
 summary(train)
@@ -57,11 +57,14 @@ for (i in 1:25){
 #train <- removeRegressionOutliers(train, 10) Remover outliers em regressão torna o erro absolutamente ridiculo
 #dim(train2)
 
-lm.fit <- lm(usd_pledged_real~ poly(categoryconcat3,2) + poly(usd_goal_real,12) + other_active_projects + poly(country3,3) + poly(duration, 18), data = train)
+lm.fit <- lm(usd_pledged_real~ poly(categoryconcat3,2) + poly(usd_goal_real,12) + other_active_projects + currencyCountry2 + poly(duration, 18), data = train)
 summary(lm.fit)
 pred <- predict.lm(lm.fit, newdata = test, se.fit = T, interval = "prediction") #começamos por utilizar cross validation mas como sabiamos que tinhamos muitos dados não havia necessidade por questões de eficiencia
 mae <- mean((abs(pred$fit[,1] - test$usd_pledged_real)))
 mae
+#14003.04 com:
+#lm.fit <- lm(usd_pledged_real~ poly(categoryconcat3,2) + poly(usd_goal_real,12) + other_active_projects + poly(country3,3) + poly(duration, 18), data = train)
+#14002.55 com:
 
 #Regsubsets 
 regfit <- regsubsets(usd_pledged_real~ poly(categoryconcat3,2) + poly(usd_goal_real,12) + other_active_projects + poly(country3,3) + poly(duration, 18), data = train, nvmax =  36)

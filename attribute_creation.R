@@ -99,3 +99,8 @@ createCategory3Regression <- function (dataset, values){
 projects$categoryconcat3 <- createCategory3Regression(projects, projects$categoryconcat)
 
 projects$country3 <- createCategory3Regression(projects, projects$country)
+
+###CurrencyCountry###
+projects$currencyCountry <- factor(paste(as.character(projects$currency), as.character(projects$country), sep = "-"))
+
+projects$currencyCountry2 <- calculateEnumeratedCategoryValues(projects, projects$currencyCountry, "usd_pledged_real")[projects$currencyCountry]
